@@ -87,22 +87,12 @@ function echoSortedTable(array $csvData, int $column, bool $asc) {
     echo '<table>';
     echoTableHeader($tableSize, $column, $asc);
     foreach ($csvData as $key => $value) {
-        echo '<tr>';
-        $counter = 0;
+        $freq = $freqArray[$value[$column]];
+        if ($freq < $lowAvg) { echo '<tr style="background: #ff9191">'; }
+        else if ($freq > $lowAvg && $freq < $highAvg) { echo '<tr style="background: #91ffa4">'; }
+        else { echo '<tr style="background: #9191ff">'; }
         foreach ($value as $item) {
-            if ($counter === $column) {
-                $freq = $freqArray[$item];
-                if ($freq < $lowAvg) {
-                    echo '<td style="background: #ff9191">' . $item . '</td>';
-                } else if ($freq > $lowAvg && $freq < $highAvg) {
-                    echo '<td style="background: #91ffa4">' . $item . '</td>';
-                } else {
-                    echo '<td style="background: #9191ff">' . $item . '</td>';
-                }
-            } else {
-                echo '<td>' . $item . '</td>';
-            }
-            $counter++;
+            echo '<td>' . $item . '</td>';
         }
         echo '</tr>';
     }
