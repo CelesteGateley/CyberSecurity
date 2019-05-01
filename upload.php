@@ -5,7 +5,7 @@ $target_dir = 'uploads/';
 $fileName = uniqid(mt_rand(), false) . '.csv';
 $target_file = $target_dir . $fileName;
 $uploadOk = 1;
-$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+$fileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
 // Check if file already exists
 if (file_exists($target_file)) {
@@ -15,7 +15,7 @@ if (file_exists($target_file)) {
     }
 }
 // Allow certain file formats
-if($imageFileType !== 'csv' && $imageFileType !== 'txt') {
+if($fileType !== 'csv' && $fileType !== 'txt') {
     $uploadOk = 0;
 }
 // Check if $uploadOk is set to 0 by an error
