@@ -11,10 +11,8 @@
         $csvData = processFile($_SESSION['filename']);
         $arr = echoValueTable($csvData, $_GET['column'], $_GET['value'], false);
         $fileName = storeToFile($arr);
-        //echo $fileName;
         echo '<script type="text/javascript">location.href = "./'. $fileName .'";</script>';
         echo '<script type="text/javascript">location.href = "index.php";</script>';
-
     ?>
 
 </body>

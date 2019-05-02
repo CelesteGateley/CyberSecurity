@@ -91,6 +91,7 @@ function echoTableHeader(int $count, int $col, bool $asc) {
 }
 
 function echoFrequencyTable(array $csvData, int $column, bool $out=true) {
+    $totalRows = count($csvData);
     $tableSize = count($csvData[0]);
     if ($column > $tableSize - 1) { echo '<script type="text/javascript">location.href = "index.php";</script>'; return $csvData; } // Verify Column is in array
     $tempArray = array();
@@ -100,11 +101,13 @@ function echoFrequencyTable(array $csvData, int $column, bool $out=true) {
     if ($out) {
         echo '<table style="width: 10%; padding: 5px; text-align: center;"><tr><th>Value</th><th>Frequency</th></tr>';
         foreach ($freqArr as $value => $frequency) {
-            echo '<tr>';
+            $color = (($frequency+($frequency/10)) > ($totalRows / count($freqArr))) ? '#94ff82' : '#ff8282';
+            echo '<tr style="background: '.$color.';">';
             echo '<td><form action="row.php" method="get"><input type="hidden" name="column" value="'.$column.'"><input type="submit" name="value" value="'.$value.'"></form></td>';
             echo '<td>' . $frequency . '</td>';
             echo '</tr>';
         }
+        echo '<tr><td><b>Total</b></td><td>'.$totalRows.'</td></tr>';
         echo '</table>';
     }
     return $freqArr;
