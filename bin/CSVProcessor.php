@@ -1,14 +1,12 @@
-<?php
+<?php /** @noinspection TypeUnsafeComparisonInspection */
 include_once 'SessionController.php'; verifySession();
 
-function storeToFile(array $arr) : string {
-    $target_dir = 'outputs/';
-    $fileName = uniqid(mt_rand(), false) . '.csv';
+function storeToFile(array $arr, string $directory='outputs/', string $fileName='') : string {
+    $target_dir = $directory;
+    if ($fileName === '') { $fileName = uniqid(mt_rand(), false) . '.csv'; }
     $target_file = $target_dir . $fileName;
-
     $file = fopen($target_file, 'wb');
     foreach ($arr as $row) { fputcsv($file, $row); }
-
     fclose($file);
     return $target_file;
 }
@@ -28,18 +26,6 @@ function processFile(string $fileName) {
     return $data;
 }
 
-function isAbnormal(array $freqArray, $value) {
-    sort($freqArray, SORT_DESC);
-    $prevVal = -1;
-    foreach ($freqArray as $key => $frequency) {
-        if ($prevVal === -1) { $prevVal = $frequency; }
-        if ($key === $value) {
-            return ($prevVal/4) < $frequency;
-        }
-    }
-    return false;
-}
-
 function getFrequency(array $arr) {
     $freqArray = array();
     foreach ($arr as $key => $value) {
@@ -52,18 +38,8 @@ function getFrequency(array $arr) {
     return $freqArray;
 }
 
-function getHighestFrequency(array $arr) {
-    $highest = 0;
-    foreach ($arr as $key => $freq) {
-        if ($freq > $highest) {
-            $highest = $freq;
-        }
-    }
-    return $highest;
-
-}
-
 function echoRawTable(array $csvData) {
+    set_time_limit(0);
     $tableSize = count($csvData[0]);
     echo '<table class="table table-bordered">';
     echoTableHeader($tableSize, -1, true);
@@ -113,35 +89,8 @@ function echoFrequencyTable(array $csvData, int $column, bool $out=true) {
     return $freqArr;
 }
 
-function echoSortedTable(array $csvData, int $column, bool $asc, bool $out=true) {
-    $tableSize = count($csvData[0]);
-    if ($column > $tableSize - 1) { echoRawTable($csvData); return $csvData; } // Verify Column is in array
-    $tempArray = array();
-    foreach ($csvData as $key => $value) { $tempArray[$key] = $value[$column]; } // Generate Array of column values
-    $sort = $asc ? SORT_ASC : SORT_DESC;
-    array_multisort($tempArray, $sort, $csvData);
-    $freqArray = getFrequency($tempArray);
-    $avg = getHighestFrequency($freqArray);
-    $lowAvg = $avg - ($avg/10);
-    $highAvg = $avg + ($avg/10);
-    if ($out) {
-        echo '<table>';
-        echoTableHeader($tableSize, $column, $asc);
-        foreach ($csvData as $key => $value) {
-            $freq = $freqArray[$value[$column]];
-            if (isAbnormal($freqArray, $value[$column])) { echo '<tr style="background: #ff9191">'; }
-            else { echo '<tr style="background: #91ffa4">'; }
-            foreach ($value as $item) {
-                echo '<td>' . $item . '</td>';
-            }
-            echo '</tr>';
-        }
-        echo '</table>';
-    }
-    return $csvData;
-}
-
 function echoValueTable(array $csvData, int $column, $value, bool $out=true) {
+    set_time_limit(0);
     $tableSize = count($csvData[0]);
     echo '<table class="table table-bordered">';
     $newArr = array();
@@ -150,9 +99,7 @@ function echoValueTable(array $csvData, int $column, $value, bool $out=true) {
         echoTableHeader($tableSize, -1, true);
         foreach ($newArr as $key => $val) {
             echo '<tr>';
-            foreach ($val as $item) {
-                echo '<td>' . $item . '</td>';
-            }
+            foreach ($val as $item) { echo '<td>' . $item . '</td>'; }
             echo '</tr>';
         }
         echo '</table>';

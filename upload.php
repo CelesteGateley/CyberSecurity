@@ -8,12 +8,11 @@ $uploadOk = 1;
 $fileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
 // Check if file already exists
-if (file_exists($target_file)) {
-    while (file_exists($target_file)) {
-        $fileName = uniqid(mt_rand(), true) . '.csv';
-        $target_file = $target_dir . $fileName;
-    }
+while (file_exists($target_file)) {
+    $fileName = uniqid(mt_rand(), false) . '.csv';
+    $target_file = $target_dir . $fileName;
 }
+
 // Allow certain file formats
 if($fileType !== 'csv' && $fileType !== 'txt') {
     $uploadOk = 0;

@@ -9,6 +9,7 @@
 <?php include_once 'bin/SessionController.php'; verifySession(); ?>
 <p>
 <?php
+ini_set('memory_limit', '-1');
 include_once 'bin/CSVProcessor.php';
 if (isset($_SESSION['filename'])) {
     echo '<div id="data-table" style="padding-left: 1%; padding-right: 1%;">';
