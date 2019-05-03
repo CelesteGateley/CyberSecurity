@@ -14,18 +14,17 @@ include_once 'bin/CSVProcessor.php';
 if (isset($_SESSION['filename'])) {
     echo '<div id="data-table" style="padding-left: 1%; padding-right: 1%;">';
     $csvData = processFile($_SESSION['filename']);
-    if (isset($_GET['column'])) {
-        if (isset($_GET['asc']) && $_GET['asc'] == 'false') {
-            echoSortedTable($csvData, $_GET['column'], true);
-        } else {
-            echoSortedTable($csvData, $_GET['column'], false);
-        }
-    } else {
-        echoRawTable($csvData);
-    }
+    echoRawTable($csvData);
     echo '</div>';
 } else {
-    echo 'Please upload a file to begin!';
+    echo 'Please upload a file to begin!<p><table style="width: 20%"><tr><th>Available Files</th></tr>';
+    $fileArr = scandir('uploads');
+    foreach ($fileArr as $key => $filename) {
+        if ($filename === '.' || $filename === '..' || $filename === '.txt') {continue;}
+        echo '<tr><td>'.$filename.'</td></tr>';
+    }
+
+    echo '</table>';
 }
 
 ?>
